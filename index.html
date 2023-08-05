@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Component</title>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: sans-serif;
+    }
+
+    :root{
+      font-size: 62.5%;
+      --color-primary: #63bfd446;
+      --color-primary-hover: #63bfd49a;
+      --color-primary-dark: #1a7e94;
+    }
+
+    body{
+      font-size: 1.6rem;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .fileDragContainer{
+      background-color: var(--color-primary);
+      border: 1px dashed var(--color-primary-dark);
+      border-radius: 1rem;
+      width: 85%;
+      max-width: 50rem;
+      padding: 4rem .5rem;
+      text-align: center;
+      position: relative;
+      cursor: pointer;
+      transition: all .3s linear;
+    }
+
+    .fileDragContainer:hover{
+      background-color: var(--color-primary-hover);
+    }
+
+    .fileDragContainer input[type='file']{
+      all: unset;
+      cursor: pointer;
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+    }
+
+    .fileDragContainer .ph-cloud-arrow-up{
+      display: inline-block;
+      color: var(--color-primary-dark);
+      font-size: 5rem;
+    }
+
+    .fileDragContainer h3,
+    .fileDragContainer p{
+      color: var(--color-primary-dark);
+    }
+
+    .fileDragContainer h3{
+      margin-top: 1rem;
+      margin-bottom: .5rem;
+    }
+
+    .fileDragContainer.dragOver{
+      background-color: var(--color-primary-hover);
+    }
+
+    .fileDragContainer.dragOver .ph-cloud-arrow-up{
+      animation: iconAnimation .4s ease-in infinite alternate;
+    }
+
+    .fileContainer{
+      border: 1px solid var(--color-primary-dark);
+      border-radius: 1rem;
+      width: 85%;
+      max-width: 50rem;
+      padding: 1rem .5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .7rem;
+      margin-top: .7rem;
+      transform: translateY(-2rem);
+      opacity: 0;
+      animation: fileContainerAnimation .6s ease-in-out forwards;
+      display: none;
+    }
+
+    .iconContainer{
+      background-color: var(--color-primary-dark);
+      border-radius: 1rem;
+      padding: .7rem;
+    }
+
+    .iconContainer i{
+      font-size: 2.5rem;
+      color: #FFF;
+    }
+
+    .fileContainer h4{
+      color: var(--color-primary-dark);
+      text-align: center;
+    }
+
+    @keyframes iconAnimation{
+      from{transform: translateY(-1rem);}
+      to{transform: translateY(1rem);}
+    }
+
+    @keyframes fileContainerAnimation{
+      to{
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="fileDragContainer">
+    <input type="file" id="inputFile">
+    <i class="ph ph-cloud-arrow-up"></i>
+    <h3>Importe seu arquivo</h3>
+    <p>Arraste ou clique para fazer upload</p>
+  </div>
+  <div class="fileContainer">
+    <div class="iconContainer">
+      <i class="ph ph-file-pdf"></i>
+    </div>
+    <h4 class="fileName">fileName.teste</h4>
+  </div>
+
+  <script type="text/javascript">
+    const fileDragContainer = document.querySelector('.fileDragContainer');
+    const inputFile = document.getElementById('inputFile');
+
+    const fileContainer = document.querySelector('.fileContainer');
+    const iconContainer = document.querySelector('.iconContainer');
+    const fileName = document.querySelector('.fileName');
+
+    fileDragContainer.addEventListener('dragover', () => {
+      fileDragContainer.classList.add('dragOver');
+    });
+
+    fileDragContainer.addEventListener('dragleave', () => {
+      fileDragContainer.classList.remove('dragOver');
+    });
+
+    function changeFileContainer(){
+      let fileArr = inputFile.files[0].name.split('.');
+      let fileType = fileArr[fileArr.length-1].toLowerCase();
+
+      iconContainer.innerHTML = `<i class="ph ph-file-${fileType}"></i>`;
+      fileContainer.style.display = 'flex';
+      fileName.innerText = inputFile.files[0].name;
+    };
+
+    inputFile.addEventListener('drop', changeFileContainer);
+    inputFile.addEventListener('change', changeFileContainer);
+  </script>
+</body>
+</html>
